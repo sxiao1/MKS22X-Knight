@@ -31,8 +31,14 @@ public class KnightBoard{
     }
     return true;
   }
-  public boolean solveHelper(int startingRow, int startingCol){
-    return true;
+  public boolean solveHelper(int startingRow, int startingCol, int count, int boardArea){
+
+    for(int a = 0; a < board[0].length; a++){
+      if(addKnight(a,0)){
+        solveHelper(a + 1, a, count + 1, boardArea);
+      }
+      }
+      return true;
   }
   public boolean addKnight(int row, int col){
     if(board[row][col] == 0){ //trying all 8 possibilities
@@ -49,7 +55,7 @@ public class KnightBoard{
     }
     return false;
   }
-  public boolean removeKnight(int row, int col){
+  /*public boolean removeKnight(int row, int col){
     if(board[row][col] == -1){
       demark(row, col, 1, 2);
       demark(row, col, 1, -2);
@@ -63,15 +69,15 @@ public class KnightBoard{
       return true;
     }
     return false;
-  }
+  } */
   public void mark(int row, int col, int acrossShift, int upShift){
     if(row + acrossShift >= 0 && row + acrossShift < board.length && col+ upShift >= 0 && col + upShift< board[0].length){
       board[row + acrossShift][col + upShift]++;
     }
   }
-  public void demark(int row, int col, int acrossShift, int upShift){
+  /*public void demark(int row, int col, int acrossShift, int upShift){
     if(row + acrossShift >= 0 && row + acrossShift < board.length && col+ upShift >= 0 && col + upShift< board[0].length){
       board[row + acrossShift][col + upShift]--;
     }
-  }
+  }*/
 }
