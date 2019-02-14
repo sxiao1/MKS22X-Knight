@@ -37,11 +37,12 @@ public class KnightBoard{
     return solveHelper(startingRow,startingCol,0,board.length * board[0].length);
   }
   public boolean solveHelper(int startingRow, int startingCol, int count, int boardArea){
-    for(int a = startingRow; a < board.length; a++){
-      for(int b = startingCol; b < board[0].length; b++){
-        count ++;
-        if(addKnight(a,b)){
-          solveHelper(a, b + 1, count + 1, boardArea);
+    int icol = startingCol;
+    int irow = startingRow;
+    while (count != boardArea){
+      for(int i = startingCol; i < board[0].length; i++){
+        if(addKnight(startingRow, startingCol)){
+          solveHelper(startingRow + 1, i , count + 1, boardArea);
         }
       }
     }
