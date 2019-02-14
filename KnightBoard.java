@@ -12,7 +12,12 @@ public class KnightBoard{
     String newstr = "";
     for(int i = 0; i < board.length; i++){
       for(int x = 0; x < board[i].length; x++){
-        newstr += board[i][x];
+        if(board[i][x] == -1){
+          newstr += "K ";
+        }
+        else{
+          newstr += "_ ";
+        }
       }
       newstr += "\n";
     }
@@ -29,16 +34,21 @@ public class KnightBoard{
     if(startingRow < 0 && startingCol< 0 && startingRow > board.length && startingCol > board[0].length){
       throw new IllegalArgumentException();
     }
-    return true;
+    return solveHelper(startingRow,startingCol,0,board.length * board[0].length);
   }
   public boolean solveHelper(int startingRow, int startingCol, int count, int boardArea){
-
-    for(int a = 0; a < board[0].length; a++){
-      if(addKnight(a,0)){
-        solveHelper(a + 1, a, count + 1, boardArea);
+    for(int a = startingRow; a < board.length; a++){
+      for(int b = startingCol; b < board[0].length; b++){
+        count ++;
+        if(addKnight(a,b)){
+          solveHelper(a, b + 1, count + 1, boardArea);
+        }
       }
-      }
+    }
+    if(count == boardArea){
       return true;
+    }
+    return false;
   }
   public boolean addKnight(int row, int col){
     if(board[row][col] == 0){ //trying all 8 possibilities
@@ -55,7 +65,7 @@ public class KnightBoard{
     }
     return false;
   }
-  /*public boolean removeKnight(int row, int col){
+  public boolean removeKnight(int row, int col){
     if(board[row][col] == -1){
       demark(row, col, 1, 2);
       demark(row, col, 1, -2);
@@ -69,15 +79,15 @@ public class KnightBoard{
       return true;
     }
     return false;
-  } */
+  }
   public void mark(int row, int col, int acrossShift, int upShift){
     if(row + acrossShift >= 0 && row + acrossShift < board.length && col+ upShift >= 0 && col + upShift< board[0].length){
       board[row + acrossShift][col + upShift]++;
     }
   }
-  /*public void demark(int row, int col, int acrossShift, int upShift){
+  public void demark(int row, int col, int acrossShift, int upShift){
     if(row + acrossShift >= 0 && row + acrossShift < board.length && col+ upShift >= 0 && col + upShift< board[0].length){
       board[row + acrossShift][col + upShift]--;
     }
-  }*/
+  }
 }
