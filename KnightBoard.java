@@ -39,10 +39,15 @@ public class KnightBoard{
   public boolean solveHelper(int startingRow, int startingCol, int count, int boardArea){
     int icol = startingCol;
     int irow = startingRow;
-    while (count != boardArea){
+    while (count != boardArea && startingRow < board.length && startingCol < board[0].length){
       for(int i = startingCol; i < board[0].length; i++){
         if(addKnight(startingRow, startingCol)){
-          solveHelper(startingRow + 1, i , count + 1, boardArea);
+          if(solveHelper(startingRow + 1, i , count + 1, boardArea)){
+            return true;
+          }
+        }
+        else{
+          removeKnight(startingRow, i);
         }
       }
     }
