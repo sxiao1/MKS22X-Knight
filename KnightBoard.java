@@ -1,5 +1,7 @@
+import java.util.*;
 public class KnightBoard{
   private int [][] board;
+  private int [][] moves = {{1,2}, {1,-2}, {-1,2}, {-1,-2}, {2,1}, {2,-1} ,{-2,1} ,{-2,-1}};
   public KnightBoard(int startingRows,int startingCols){
     board = new int[startingRows][startingCols];
     for(int i = 0; i < board.length; i++){
@@ -12,11 +14,11 @@ public class KnightBoard{
     String newstr = "";
     for(int i = 0; i < board.length; i++){
       for(int x = 0; x < board[i].length; x++){
-        if(board[i][x] == -1){
-          newstr += "K ";
+        if(board[i][x] == 0){
+          newstr += "_ ";
         }
         else{
-          newstr += "_ ";
+          newstr += "" + board[i][x];
         }
       }
       newstr += "\n";
@@ -34,66 +36,55 @@ public class KnightBoard{
     if(startingRow < 0 && startingCol< 0 && startingRow > board.length && startingCol > board[0].length){
       throw new IllegalArgumentException();
     }
-    return solveHelper(startingRow,startingCol,0,board.length * board[0].length);
+    return solveHelper(startingRow,startingCol,1);
   }
-  public boolean solveHelper(int startingRow, int startingCol, int count, int boardArea){
-    int icol = startingCol;
-    int irow = startingRow;
-    while (count != boardArea && startingRow < board.length && startingCol < board[0].length){
-      for(int i = startingCol; i < board[0].length; i++){
-        if(addKnight(startingRow, startingCol)){
-          if(solveHelper(startingRow + 1, i , count + 1, boardArea)){
-            return true;
-          }
-        }
-        else{
-          removeKnight(startingRow, i);
-        }
-      }
-    }
-    if(count == boardArea){
+  public boolean addK(int row, int col, int position){
+    if(row > 0 && col > 0 && row < board.length && col < board[0].length && board[row][col] == 0){
+      board[row][col] = position;
       return true;
     }
-    return false;
-  }
-  public boolean addKnight(int row, int col){
-    if(board[row][col] == 0){ //trying all 8 possibilities
-      mark(row, col, 1, 2);
-      mark(row, col, 1, -2);
-      mark(row, col, -1, 2);
-      mark(row, col, -1, -2);
-      mark(row, col, 2, 1);
-      mark(row, col, 2, -1);
-      mark(row, col, -2, 1);
-      mark(row, col, -2, -1);
-      board[row][col] = -1; //setting knight
-      return true;
+    else{
+      return false;
     }
-    return false;
   }
-  public boolean removeKnight(int row, int col){
-    if(board[row][col] == -1){
-      demark(row, col, 1, 2);
-      demark(row, col, 1, -2);
-      demark(row, col, -1, 2);
-      demark(row, col, -1, -2);
-      demark(row, col, 2, 1);
-      demark(row, col, 2, -1);
-      demark(row, col, -2, 1);
-      demark(row, col, -2, -1);
+  public boolean removeK(int row, int col, int position){
+    if(row > 0 && col > 0 && row < board.length && col < board[0].length){
       board[row][col] = 0;
       return true;
     }
-    return false;
-  }
-  public void mark(int row, int col, int acrossShift, int upShift){
-    if(row + acrossShift >= 0 && row + acrossShift < board.length && col+ upShift >= 0 && col + upShift< board[0].length){
-      board[row + acrossShift][col + upShift]++;
+    else{
+      return false;
     }
   }
-  public void demark(int row, int col, int acrossShift, int upShift){
-    if(row + acrossShift >= 0 && row + acrossShift < board.length && col+ upShift >= 0 && col + upShift< board[0].length){
-      board[row + acrossShift][col + upShift]--;
+  public boolean solveHelper(int startingRow, int startingCol, int position){
+    if(position > board.length * board[0].length){
+      return true;
     }
+    else{
+      if(addK(startingRow, startingCol, position)){
+        ArrayList<Integer> list = diffMoves(startingRow, startingCol);
+        for(int i = 0; i < list.size(); i += 2){
+          int newRow = startingRow + list.get(i);
+          int newCol = startingCol + list.get(i + 1);
+          if(solveHelper(newRow, newCol, position + 1)){
+            return true;
+          }
+          removeK(startingRow, startingCol, position);
+        }
+      }
+      return false;
+    }
+  }
+  public ArrayList<Integer> diffMoves(int row, int col){
+    ArrayList<Integer> list = new ArrayList<Integer>();
+    for(int i = 0; i < moves.length; i++){
+      int newRow = row + moves[i][0];
+      int newCol = col + moves[i][1];
+      if(newRow > 0 && newCol > 0 && newRow < board.length && newCol < board[0].length){
+        list.add(moves[i][0]);
+        list.add(moves[i][1]);
+      }
+    }
+    return list;
   }
 }
