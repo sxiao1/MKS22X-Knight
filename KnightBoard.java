@@ -38,7 +38,7 @@ public class KnightBoard{
     }
     return solveHelper(startingRow,startingCol,1);
   }
-  /*public boolean addK(int row, int col, int position){
+  public boolean addK(int row, int col, int position){
     if(row >= 0 && col >= 0 && row < board.length && col < board[0].length && board[row][col] == 0){
       board[row][col] = position;
       return true;
@@ -55,7 +55,7 @@ public class KnightBoard{
     else{
       return false;
     }
-  }*/
+  }
   public boolean solveHelper(int startingRow, int startingCol, int position){
     if(position == board.length * board[0].length){
       board[startingRow][startingCol] = position;
@@ -63,14 +63,13 @@ public class KnightBoard{
     }
     ArrayList<Integer> list = diffMoves(startingRow, startingCol);
     board[startingRow][startingCol] = position;
+		//System.out.println(this);
     for(int i = 0; i < list.size(); i += 2){
       if(solveHelper(list.get(i), list.get(i+1), position + 1)){
         return true;
       }
     }
-    //removeK(startingRow, startingCol, position);
-    board[startingRow][startingCol] = 0;
-    board = new int[board.length][board[0].length];
+    removeK(startingRow, startingCol, position);
     return false;
   }
   public ArrayList<Integer> diffMoves(int row, int col){
