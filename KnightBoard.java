@@ -1,5 +1,6 @@
 import java.util.*;
 public class KnightBoard{
+  private int total = 0;
   private int [][] board;
   private int [][] moves = {{1,2}, {1,-2}, {-1,2}, {-1,-2}, {2,1}, {2,-1} ,{-2,1} ,{-2,-1}};
   public KnightBoard(int startingRows,int startingCols){
@@ -47,8 +48,8 @@ public class KnightBoard{
       return false;
     }
   }
-  public boolean removeK(int row, int col, int position){
-    if(row >= 0 && col >= 0 && row < board.length && col < board[0].length){
+  public boolean removeK(int row, int col){
+    if(row >= 0 && col >= 0 && row < board.length && col < board[0].length && board[row][col] != 0){
       board[row][col] = 0;
       return true;
     }
@@ -69,7 +70,7 @@ public class KnightBoard{
         return true;
       }
     }
-    removeK(startingRow, startingCol, position);
+    removeK(startingRow, startingCol);
     return false;
   }
   public ArrayList<Integer> diffMoves(int row, int col){
@@ -99,20 +100,26 @@ public class KnightBoard{
     if(startRow < 0 || startCol < 0 || startRow > board.length || startCol > board[0].length){
       throw new IllegalArgumentException();
     }
-    return countHelper(startRow, startCol,0);
+    //board[startRow][startCol] = 1;
+    return countHelper(0, 0,1);
   }
-  public int countHelper(int row, int col, int count){
-    int temp = 0;
-    for(int i = 0; i < moves.length; i++){
-      if(addK(row, col, 1)){
-        int newRow = row + moves[i][0];
-        int newCol = col + moves[i][1];
-        if(newRow >= 0 && newRow < board.length && newCol >= 0 && newCol < board[0].length){
-          temp += countHelper(newRow, newCol, count);
-        }
-        removeK(row, col, 1);
+  public int countHelper(int row, int col,int position){
+      if(position == board.length * board[0].length){
+        //removeK(row, col, position);
+        return 1;
       }
+      if(row >= board.length || col >= board[0].length || row < 0 || col < 0){
+        return 0;
+      }
+    else{
+      if(addK(row, col, position)){
+      //ArrayList<Integer> list = diffMoves(row,col);
+      for(int i = 0; i < moves.length; i++){
+        total += countHelper(row + moves[i][0], col + moves[i][1], position + 1);
+      }
+      removeK(row, col);
     }
-    return count + temp;
   }
+  return total;
+}
 }
