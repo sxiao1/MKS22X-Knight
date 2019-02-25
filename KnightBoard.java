@@ -86,6 +86,9 @@ public class KnightBoard{
     }
     return list;
   }
+  public boolean checker(int row, int col){
+    return (row < board.length && row >= 0 && col < board[0].length && col >= 0);
+  }
   public int countSolutions(int startRow, int startCol){
     if(board.length == 0){
       return 0;
@@ -101,36 +104,25 @@ public class KnightBoard{
       throw new IllegalArgumentException();
     }
     //board[startRow][startCol] = 1;
-    int count = 0;
-    for(int i = 0; i < board.length; i++){
-      for(int x = 0; x < board[0].length; x++){
-        count += countHelper(startRow, startCol, 1); //calling helper
-      }
-    }
-    return count;
+    return countHelper(startRow, startCol, 1);
   }
   public int countHelper(int row, int col,int position){
-      if(position == board.length * board[0].length + 1){
+      if(position >= board.length * board[0].length){
         //removeK(row, col, position);
         return 1;
       }
       if(row >= board.length || col >= board[0].length || row < 0 || col < 0){
         return 0;
       }
-    else{
-      if(addK(row, col, position)){
-        //if(position == board.length* board[0].length){
-        //  total ++;
-        //}
-      //ArrayList<Integer> list = diffMoves(row,col);
-      for(int i = 0; i < moves.length; i++){
-        if(row + moves[i][0] >= 0 && col + moves[i][1]>= 0 && row + moves[i][0]< board.length && col + moves[i][1]< board[0].length){
-        total += countHelper(row + moves[i][0], col + moves[i][1], position + 1);
-        board[row + moves[i][0]][col + moves[i][1]] = 0;
-      }
+    for(int i = 0; i < moves.length; i++){
+      int newRow = row + moves[i][0];
+      int newCol = col + moves[i][1];
+      if(checker(newRow, newCol) && board[newRow][newCol] == 0){
+        board[row][col] = position;
+        total += countHelper(newRow, newCol, position +1);
+        board[row][col] = 0;
       }
     }
-  }
   return total;
 }
 }
