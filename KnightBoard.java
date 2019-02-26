@@ -1,6 +1,5 @@
 import java.util.*;
 public class KnightBoard{
-  private int total = 0;
   private int [][] board;
   private int [][] moves = {{1,2}, {1,-2}, {-1,2}, {-1,-2}, {2,1}, {2,-1} ,{-2,1} ,{-2,-1}}; //array of moves
   public KnightBoard(int startingRows,int startingCols){
@@ -40,16 +39,19 @@ public class KnightBoard{
     return solveHelper(startingRow,startingCol,1); //calling helper
   }
   public boolean addK(int row, int col, int position){
-    if(row >= 0 && col >= 0 && row < board.length && col < board[0].length && board[row][col] == 0){
-      board[row][col] = position;
-      return true;
-    }
-    else{
-      return false;
-    }
+    if (row >= board.length || col >= board[0].length|| row < 0 || col < 0){
+        return false;
+      }
+      if (board[row][col] != 0){
+        return false;
+      }
+      else{
+        board[row][col] = position;
+        return true;
+      }
   }
   public boolean removeK(int row, int col){
-    if(row >= 0 && col >= 0 && row < board.length && col < board[0].length && board[row][col] != 0){
+    if(board[row][col] != 0){
       board[row][col] = 0;
       return true;
     }
@@ -100,27 +102,30 @@ public class KnightBoard{
         }
       }
     }
-    if(startRow < 0 || startCol < 0 || startRow > board.length || startCol > board[0].length){
+    if(startRow < 0 || startCol < 0){
       throw new IllegalArgumentException();
     }
     //board[startRow][startCol] = 1;
     return countHelper(startRow, startCol, 1);
   }
   public int countHelper(int row, int col,int position){
-      if(position >= board.length * board[0].length){
-        //removeK(row, col, position);
+    int total = 0;
+      if(position == board.length * board[0].length + 1){
+        //removeK(row, col);
         return 1;
+      }
+      /*if(board[row][col] != 0){
+        return 0;
       }
       if(row >= board.length || col >= board[0].length || row < 0 || col < 0){
         return 0;
-      }
+      }*/
     for(int i = 0; i < moves.length; i++){
       int newRow = row + moves[i][0];
       int newCol = col + moves[i][1];
-      if(checker(newRow, newCol) && board[newRow][newCol] == 0){
-        board[row][col] = position;
+        if(addK(row, col, position)){
         total += countHelper(newRow, newCol, position +1);
-        board[row][col] = 0;
+        removeK(row, col);
       }
     }
   return total;
@@ -153,7 +158,7 @@ public static void runTest(int i){
   }
 }
 public static String checker(int num){
-  runTest(1);
+  runTest(0);
   return "";
 }
 }
